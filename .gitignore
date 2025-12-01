@@ -1,0 +1,13 @@
+# Terraform local state and caches
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+crash.log
+
+# VS Code settings
+.vscode/
+
+# Python or Node artifacts (future-proofing)
+__pycache__/
+node_modules/
