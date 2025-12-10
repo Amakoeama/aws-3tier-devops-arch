@@ -58,6 +58,6 @@ resource "aws_lb_listener" "app_listener" {
   }
   lifecycle {
     create_before_destroy = true
- }
+  }
 }
  

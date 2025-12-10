@@ -12,9 +12,9 @@ resource "aws_security_group" "ec2_sg" {
   }
 
   ingress {
-    from_port        = 8000
-    to_port          = 8000
-    protocol         = "tcp"
+    from_port       = 8000
+    to_port         = 8000
+    protocol        = "tcp"
     security_groups = [aws_security_group.alb_sg.id] # HTTP / ALB traffic
   }
 

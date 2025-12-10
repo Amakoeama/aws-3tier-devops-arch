@@ -1,4 +1,5 @@
 # Terraform local state and caches
+*.env
 .terraform/
 *.tfstate
 *.tfstate.backup
@@ -11,3 +12,4 @@ crash.log
 # Python or Node artifacts (future-proofing)
 __pycache__/
 node_modules/
+session-manager-plugin.deb

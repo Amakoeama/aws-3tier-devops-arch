@@ -22,3 +22,9 @@ output "vpc_id" {
   description = "ID of the main VPC"
   value       = aws_vpc.main.id
 }
+
+#--- RDS output ---
+output "rds_endpoint" {
+  description = "PostgreSQL endpoint"
+  value       = aws_db_instance.postgres.address
+}

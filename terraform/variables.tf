@@ -23,6 +23,12 @@ variable "private_subnet_cidrs" {
   default     = ["10.0.3.0/24", "10.0.4.0/24"]
 }
 
+#--- Availabiliy zones ---
+variable "azs" {
+  type    = list(string)
+  default = ["us-east-1a", "us-east-1b"]
+}
+
 #--- Ec2 type ---
 variable "instance_type" {
   description = "EC2 instance type"
@@ -40,6 +46,12 @@ variable "key_name" {
 variable "environment" {
   type    = string
   default = "dev"
+}
+
+#--- DB Password --- 
+variable "db_password" {
+  description = "Master password for the RDS PostgreSQL instance"
+  type        = string
 }
 
 
