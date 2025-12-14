@@ -12,4 +12,7 @@ crash.log
 # Python or Node artifacts (future-proofing)
 __pycache__/
 node_modules/
+#--- Unwanted binary or local files ---
 session-manager-plugin.deb
+github-ci-policy.json
+
