@@ -24,21 +24,23 @@ resource "aws_instance" "app_server" {
   subnet_id              = aws_subnet.private[0].id
   vpc_security_group_ids = [aws_security_group.ec2_sg.id]
   key_name               = var.key_name
-  
+
   iam_instance_profile = aws_iam_instance_profile.ec2_ssm_profile.name
 
   user_data = templatefile("${path.module}/../scripts/ec2-bootstrap.sh", {
-  db_host     = aws_db_instance.postgres.address
-  db_name     = "postgres"
-  db_user     = "masteruser"
-  db_password = var.db_password
-})
+    db_host     = aws_db_instance.postgres.address
+    db_name     = "postgres"
+    db_user     = "masteruser"
+    db_password = var.db_password
+  })
 
 
   tags = {
     Name        = "3tier-app-server"
     Environment = var.environment
+    Role        = "app-server"
   }
+
 }
 
 
