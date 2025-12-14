@@ -1,0 +1,70 @@
+
+name: Deploy FastAPI App
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+  
+    #--- Checkout the repository ---
+    
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    
+    #--- Configure AWS credentials ---
+    
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    
+    #--- Upload main.py to your S3 artifacts bucket ---
+    
+    - name: Upload artifact to S3
+      run: |
+        aws s3 cp app/main.py s3://${{ secrets.S3_BUCKET }}/main.py
+
+    
+    #--- Dynamically discover EC2 instance ID ---
+    
+    - name: Get EC2 Instance ID dynamically
+      id: get_instance
+      run: |
+        INSTANCE_ID=$(aws ec2 describe-instances \
+          --filters "Name=tag:Role,Values=app-server" \
+          --query "Reservations[0].Instances[0].InstanceId" \
+          --output text)
+        echo "INSTANCE_ID=$INSTANCE_ID" >> $GITHUB_ENV
+        echo "Discovered EC2 Instance: $INSTANCE_ID"
+
+    
+    #--- Trigger SSM deploy script on EC2 ---
+    
+    - name: Run deployment on EC2 via SSM
+      run: |
+        aws ssm send-command \
+          --instance-ids $INSTANCE_ID \
+          --document-name "AWS-RunShellScript" \
+          --comment "Deploy FastAPI App" \
+          --parameters commands="['sudo /opt/deploy/update_app.sh']" \
+          --output text
+
+    #--- Wait a moment for service to restart ---
+    
+    - name: Wait for FastAPI restart
+      run: sleep 10
+
+   
+    #--- Confirm deployment complete ---
+    
+    - name: Deployment complete
+      run: echo "FastAPI application successfully deployed to EC2."
